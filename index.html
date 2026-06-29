@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LinkedIn Report — Shruti Agrawal</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#6366F1;--primary-light:#818CF8;--primary-dark:#4F46E5;
+  --green:#10B981;--amber:#F59E0B;--bg:#F1F2F7;--card:#fff;--border:#E5E7EB;
+  --text-1:#111827;--text-2:#6B7280;--text-3:#9CA3AF;--sidebar-w:230px;
+}
+html,body{height:100%;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;}
+.sidebar{width:var(--sidebar-w);background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:20px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-mark svg{width:18px;height:18px;fill:#fff;}
+.logo-text{font-size:13px;font-weight:700;color:var(--text-1);letter-spacing:-0.3px;}
+.logo-sub{font-size:10px;color:var(--text-3);}
+.sidebar-profile{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);}
+.avatar-wrap{position:relative;}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.online-dot{width:7px;height:7px;background:var(--green);border-radius:50%;border:1.5px solid #fff;position:absolute;bottom:1px;right:1px;}
+.profile-info h3{font-size:13px;font-weight:600;}
+.profile-info p{font-size:11px;color:var(--text-3);}
+.period-wrap{padding:12px 20px;border-bottom:1px solid var(--border);}
+.period-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:7px;}
+.period-select{width:100%;padding:8px 28px 8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:'Inter',sans-serif;color:var(--text-1);background:#FAFAFA;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;}
+.sidebar-nav{padding:10px 12px;flex:1;}
+.nav-section{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;padding:0 8px;margin:12px 0 5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:all .12s;text-decoration:none;margin-bottom:1px;}
+.nav-item:hover{background:#F5F5FD;color:var(--primary);}
+.nav-item.active{background:#EEF2FF;color:var(--primary);font-weight:500;}
+.nav-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-icon svg{width:16px;height:16px;}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);}
+.report-info{background:#EEF2FF;border-radius:10px;padding:10px 14px;}
+.report-info p{font-size:11px;color:var(--primary);font-weight:600;margin-bottom:2px;}
+.report-info span{font-size:10px;color:var(--text-3);}
+.m-topbar{display:none;position:fixed;top:0;left:0;right:0;z-index:300;background:var(--card);border-bottom:1px solid var(--border);}
+.m-topbar-row1{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;gap:12px;}
+.m-brand{display:flex;align-items:center;gap:8px;}
+.m-logo-mark{width:28px;height:28px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.m-logo-mark svg{width:15px;height:15px;fill:#fff;}
+.m-brand-title{font-size:14px;font-weight:700;color:var(--text-1);line-height:1.1;}
+.m-brand-sub{font-size:10px;color:var(--text-3);margin-top:1px;}
+.m-live-badge{display:flex;align-items:center;gap:5px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:20px;padding:5px 10px;flex-shrink:0;}
+.m-live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;}
+.m-live-text{font-size:11px;font-weight:600;color:#059669;}
+.m-topbar-row2{padding:0 16px 12px;}
+.m-period-select{width:100%;padding:9px 32px 9px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;color:var(--text-1);background:#FAFAFA;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.layout{display:flex;min-height:100vh;}
+.main{margin-left:var(--sidebar-w);flex:1;padding:28px 28px 60px;min-width:0;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;}
+.topbar-left h1{font-size:20px;font-weight:700;letter-spacing:-0.4px;}
+.topbar-left p{font-size:12px;color:var(--text-3);margin-top:3px;}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.period-chip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text-2);font-weight:500;white-space:nowrap;}
+.period-chip .dot{width:7px;height:7px;background:var(--green);border-radius:50%;}
+.export-btn{display:flex;align-items:center;gap:6px;background:var(--primary);color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.kpi-card{background:var(--card);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden;border:1px solid var(--border);transition:box-shadow .2s;}
+.kpi-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.kpi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.kpi-icon svg{width:18px;height:18px;}
+.kpi-icon.indigo{background:#EEF2FF;} .kpi-icon.indigo svg{stroke:var(--primary);}
+.kpi-icon.green{background:#D1FAE5;} .kpi-icon.green svg{stroke:var(--green);}
+.kpi-icon.amber{background:#FEF3C7;} .kpi-icon.amber svg{stroke:var(--amber);}
+.kpi-meta{font-size:11px;color:var(--text-3);font-weight:500;margin-bottom:5px;}
+.kpi-value{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:10px;}
+.kpi-footer{display:flex;align-items:flex-end;justify-content:space-between;}
+.kpi-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.kpi-tag.green{background:#D1FAE5;color:#059669;}
+.kpi-tag.neutral{background:#F3F4F6;color:var(--text-3);}
+.kpi-tag.amber{background:#FEF3C7;color:#D97706;}
+.kpi-spark-wrap{width:90px;height:38px;flex-shrink:0;}
+.kpi-spark-wrap canvas{display:block;}
+.kpi-spark-label{font-size:9px;color:var(--text-3);text-align:right;margin-bottom:2px;white-space:nowrap;}
+.highlight-banner{background:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);border-radius:20px;padding:28px 32px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;}
+.highlight-banner::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:rgba(255,255,255,.06);border-radius:50%;}
+.hb-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.hb-eyebrow{font-size:11px;font-weight:500;opacity:.65;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.hb-number{font-size:52px;font-weight:800;line-height:1;letter-spacing:-2px;}
+.hb-sub{font-size:12px;opacity:.55;margin-top:6px;}
+.hb-stats{display:flex;align-items:center;flex-shrink:0;}
+.hb-stat{text-align:center;padding:0 20px;}
+.hb-stat+.hb-stat{border-left:1px solid rgba(255,255,255,.2);}
+.hb-stat-label{font-size:11px;opacity:.6;margin-bottom:5px;}
+.hb-stat-val{font-size:22px;font-weight:700;letter-spacing:-0.5px;}
+.hb-stat-sub{font-size:10px;opacity:.5;margin-top:3px;}
+.hb-mobile-stats{display:none;margin-top:18px;grid-template-columns:1fr 1fr;gap:10px;}
+.hb-mstat{background:rgba(255,255,255,.13);border-radius:12px;padding:12px 14px;}
+.hb-mstat .ml{font-size:11px;opacity:.7;margin-bottom:4px;}
+.hb-mstat .mv{font-size:20px;font-weight:700;letter-spacing:-0.5px;line-height:1;}
+.hb-mstat .ms{font-size:10px;opacity:.5;margin-top:3px;}
+.sec-heading{display:none;font-size:13px;font-weight:700;color:var(--text-1);letter-spacing:-0.2px;margin-bottom:10px;padding-left:2px;}
+.card{background:var(--card);border-radius:16px;padding:20px;border:1px solid var(--border);transition:box-shadow .2s;margin-bottom:18px;}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.06);}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:8px;}
+.card-title{font-size:14px;font-weight:600;letter-spacing:-0.2px;}
+.card-sub{font-size:11px;color:var(--text-3);margin-top:3px;}
+.legend-pills{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.legend-pill{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2);font-weight:500;}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.chart-wrap{position:relative;width:100%;height:200px;}
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:0;}
+.compare-card{background:var(--card);border-radius:16px;padding:18px 20px;border:1px solid var(--border);}
+.compare-month{font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #F9FAFB;font-size:12px;}
+.compare-row:last-child{border-bottom:none;}
+.compare-label{color:var(--text-3);}
+.compare-val{font-weight:700;color:var(--text-1);}
+.section-sep{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+.demo-list{list-style:none;}
+.demo-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F9FAFB;}
+.demo-item:last-child{border-bottom:none;}
+.demo-rank{font-size:11px;color:var(--text-3);font-weight:600;width:16px;flex-shrink:0;}
+.demo-name{font-size:12px;color:var(--text-1);font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.demo-bar-wrap{width:70px;background:#F3F4F6;border-radius:4px;height:5px;flex-shrink:0;}
+.demo-bar{height:5px;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--primary-light));}
+.demo-pct{font-size:12px;color:var(--text-1);font-weight:700;min-width:32px;text-align:right;}
+.seniority-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:4px;}
+.seniority-item{display:flex;align-items:center;gap:7px;padding:8px 10px;background:#FAFAFA;border-radius:9px;border:1px solid var(--border);}
+.seniority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.seniority-name{font-size:11px;font-weight:500;color:var(--text-1);}
+.seniority-pct{font-size:12px;font-weight:700;color:var(--text-1);margin-left:auto;flex-shrink:0;}
+.post-item{padding:12px 0;border-bottom:1px solid #F9FAFB;}
+.post-item:last-child{border-bottom:none;}
+.post-title{font-size:12px;color:var(--text-1);font-weight:500;line-height:1.6;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.post-meta{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;}
+.post-date{font-size:10px;color:var(--text-3);}
+.post-badges{display:flex;gap:6px;align-items:center;}
+.badge{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;}
+.badge-indigo{background:#EEF2FF;color:var(--primary);}
+.badge-green{background:#D1FAE5;color:#059669;}
+.post-link{font-size:11px;color:var(--primary);text-decoration:none;font-weight:600;}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;background:var(--card);border-top:1px solid var(--border);z-index:200;justify-content:space-around;align-items:center;padding:0 4px;}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text-3);font-weight:500;padding:4px 8px;border-radius:10px;cursor:pointer;text-decoration:none;transition:color .15s;flex:1;}
+.bnav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.bnav-item.active{color:var(--primary);}
+@media(max-width:900px){
+  .sidebar{display:none;}.topbar{display:none;}
+  .m-topbar{display:block;}.bottom-nav{display:flex;}
+  .layout{display:block;}
+  .main{margin-left:0;padding:16px 14px 80px;}
+  .sec-heading{display:block;}
+  .kpi-grid{grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .kpi-card{padding:14px 12px;}
+  .kpi-icon{width:30px;height:30px;margin-bottom:8px;} .kpi-icon svg{width:14px;height:14px;}
+  .kpi-value{font-size:20px;margin-bottom:8px;} .kpi-meta{font-size:10px;}
+  .kpi-spark-wrap{width:60px;height:26px;} .kpi-spark-label{font-size:8px;} .kpi-tag{font-size:10px;padding:2px 6px;}
+  .hb-stats{display:none;} .hb-mobile-stats{display:grid;}
+  .hb-number{font-size:38px;} .highlight-banner{padding:20px 18px;border-radius:16px;margin-bottom:14px;}
+  .chart-wrap{height:220px;} .card{padding:16px;margin-bottom:14px;}
+  .compare-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .main{padding-left:12px;padding-right:12px;}
+  .kpi-grid{grid-template-columns:1fr;gap:10px;}
+  .kpi-card{display:flex;flex-direction:row;align-items:center;gap:14px;padding:14px 16px;}
+  .kpi-icon{margin-bottom:0;flex-shrink:0;width:40px;height:40px;} .kpi-icon svg{width:18px;height:18px;}
+  .kpi-card-body{flex:1;min-width:0;}
+  .kpi-meta{font-size:11px;margin-bottom:3px;} .kpi-value{font-size:28px;margin-bottom:6px;}
+  .kpi-footer{align-items:center;} .kpi-spark-wrap{width:80px;height:34px;}
+  .chart-wrap{height:200px;} .hb-number{font-size:32px;}
+  .demo-bar-wrap{display:none;} .seniority-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TEMPLATE PLACEHOLDERS:
+  Shruti Agrawal     — full client name
+  SA — 2 letter initials
+  {
+  jan: {
+    label: "January 2026",
+    range: "Jan 1 – Jan 31, 2026",
+    labels: ["1/1","1/2","1/3","1/4","1/5","1/6","1/7","1/8","1/9","1/10","1/11","1/12","1/13","1/14","1/15","1/16","1/17","1/18","1/19","1/20","1/21","1/22","1/23","1/24","1/25","1/26","1/27","1/28","1/29","1/30","1/31"],
+    impressions: [10185,5338,1690,1358,2416,1270,2300,1443,2429,936,977,1656,986,2690,1078,582,457,488,379,374,1636,945,1831,1047,1131,2941,1573,2755,2115,2949,8517],
+    engagements: [80,26,10,3,9,9,25,9,30,2,6,8,8,39,13,6,4,1,4,1,18,10,13,5,1,9,3,33,6,14,45],
+    followers: [24,25,5,5,7,12,6,8,4,8,4,6,8,11,8,2,12,7,1,8,3,3,5,8,5,3,10,8,3,15,13],
+    totalImp: 66472, totalEng: 450, totalFol: 247,
+    peakDay: "Jan 1", peakVal: "10,185",
+    impTagClass: "green", impTagText: "📈 Strong start",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Jan 31, 2026",date:"Jan 31, 2026",imp:"11,806",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_budget2026-share-7423236616552390656-H7Wk"},
+      {title:"LinkedIn Post · Jan 21, 2026",date:"Jan 21, 2026",imp:"9,781",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_65-of-women-over-45-make-financial-decisions-share-7419609348114370560-semM"},
+      {title:"LinkedIn Post · Jan 1, 2026",date:"Jan 1, 2026",imp:"7,275",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_2025reflection-newyear2026-share-7412364337538854912-n-km"},
+      {title:"LinkedIn Post · Jan 28, 2026",date:"Jan 28, 2026",imp:"4,298",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_should-i-even-invest-in-india-anymore-if-share-7422150395470299137-xEDb"},
+      {title:"LinkedIn Post · Jan 7, 2026",date:"Jan 7, 2026",imp:"3,742",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_moneymanagement-share-7414539328778878976-nErg"}
+    ]
+  },
+  feb: {
+    label: "February 2026",
+    range: "Feb 1 – Feb 28, 2026",
+    labels: ["2/1","2/2","2/3","2/4","2/5","2/6","2/7","2/8","2/9","2/10","2/11","2/12","2/13","2/14","2/15","2/16","2/17","2/18","2/19","2/20","2/21","2/22","2/23","2/24","2/25","2/26","2/27","2/28"],
+    impressions: [3804,3244,2112,2119,963,44585,19894,4027,7281,3469,2890,1994,2219,818,652,1522,747,1995,919,592,512,880,721,586,1948,707,485,2385],
+    engagements: [6,36,38,22,2,128,49,10,49,7,27,3,17,6,2,36,6,33,10,0,5,6,0,4,25,8,3,32],
+    followers: [8,7,18,7,5,61,16,6,15,14,6,8,9,1,5,8,8,8,4,10,7,5,6,13,11,6,6,8],
+    totalImp: 114070, totalEng: 555, totalFol: 286,
+    peakDay: "Feb 6", peakVal: "44,585",
+    impTagClass: "amber", impTagText: "🔥 Viral month",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Feb 6, 2026",date:"Feb 6, 2026",imp:"76,822",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_is-90-lpa-a-good-salary-in-bengaluru-this-share-7425418180648488961-IIRV"},
+      {title:"LinkedIn Post · Feb 9, 2026",date:"Feb 9, 2026",imp:"7,642",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_silver-share-7426512510717087744-yTH4"},
+      {title:"LinkedIn Post · Feb 2, 2026",date:"Feb 2, 2026",imp:"5,476",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_with-gold-and-silver-in-the-spotlight-this-ugcPost-7424038549294923776-GO7K"},
+      {title:"LinkedIn Post · Feb 28, 2026",date:"Feb 28, 2026",imp:"5,206",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_finance-share-7433380043319484416-ftoC"},
+      {title:"LinkedIn Post · Feb 4, 2026",date:"Feb 4, 2026",imp:"3,519",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_theres-a-side-to-stock-investing-that-doesn-share-7424683296619556864-c9CI"}
+    ]
+  },
+  mar: {
+    label: "March 2026",
+    range: "Mar 1 – Mar 31, 2026",
+    labels: ["3/1","3/2","3/3","3/4","3/5","3/6","3/7","3/8","3/9","3/10","3/11","3/12","3/13","3/14","3/15","3/16","3/17","3/18","3/19","3/20","3/21","3/22","3/23","3/24","3/25","3/26","3/27","3/28","3/29","3/30","3/31"],
+    impressions: [1353,1043,526,439,342,364,278,869,835,2454,707,1871,742,404,454,2015,775,1232,31168,26728,11399,10160,10369,20622,5762,5377,3019,1936,1693,1400,1168],
+    engagements: [14,11,5,5,0,3,4,10,13,45,6,23,9,4,4,36,15,17,264,196,79,81,116,128,31,53,18,3,7,3,8],
+    followers: [7,16,11,8,6,9,2,8,17,20,8,18,10,3,2,15,34,9,160,106,41,41,51,124,33,36,10,6,23,5,6],
+    totalImp: 147504, totalEng: 1211, totalFol: 845,
+    peakDay: "Mar 19", peakVal: "31,168",
+    impTagClass: "amber", impTagText: "🔥 Best month",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Mar 19, 2026",date:"Mar 19, 2026",imp:"1,02,729",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_as-part-of-my-hiring-process-ive-been-screening-share-7440275704832741376-UpUj"},
+      {title:"LinkedIn Post · Mar 23, 2026",date:"Mar 23, 2026",imp:"23,014",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_hiring-wealthmanagement-hiringmumbai-share-7441895766950010881-jG5-"},
+      {title:"LinkedIn Post · Mar 26, 2026",date:"Mar 26, 2026",imp:"7,462",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_financebill-share-7442870614115352576-NK9s"},
+      {title:"LinkedIn Post · Mar 10, 2026",date:"Mar 10, 2026",imp:"3,801",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_moneystrategy-share-7437014655446884352--byw"},
+      {title:"LinkedIn Post · Mar 18, 2026",date:"Mar 18, 2026",imp:"3,506",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_shruti-i-cant-reduce-this-position-it-share-7439913285816279040-sbjF"}
+    ]
+  },
+  apr: {
+    label: "April 2026",
+    range: "Apr 1 – Apr 30, 2026",
+    labels: ["4/1","4/2","4/3","4/4","4/5","4/6","4/7","4/8","4/9","4/10","4/11","4/12","4/13","4/14","4/15","4/16","4/17","4/18","4/19","4/20","4/21","4/22","4/23","4/24","4/25","4/26","4/27","4/28","4/29","4/30"],
+    impressions: [1129,524,412,771,920,718,490,569,1799,13342,8139,4427,3273,6721,6801,2515,4925,3197,2245,5034,2522,5534,4850,3237,4017,1880,7093,2533,1241,1021],
+    engagements: [9,4,8,10,6,4,2,7,12,152,72,40,25,58,44,10,53,39,11,54,16,49,31,27,29,13,30,17,7,2],
+    followers: [23,11,3,5,18,25,16,29,25,34,30,23,35,34,67,27,21,23,11,18,23,20,30,24,10,8,21,14,15,10],
+    totalImp: 101879, totalEng: 841, totalFol: 653,
+    peakDay: "Apr 10", peakVal: "13,342",
+    impTagClass: "green", impTagText: "📈 Growing",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Apr 10, 2026",date:"Apr 10, 2026",imp:"36,921",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_rantpost-share-7448243124054716416-g5Wy"},
+      {title:"LinkedIn Post · Apr 27, 2026",date:"Apr 27, 2026",imp:"11,121",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_shruti-4-lakh-bonus-where-do-i-put-it-share-7454410391062757377-7NtY"},
+      {title:"LinkedIn Post · Apr 14, 2026",date:"Apr 14, 2026",imp:"10,516",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_i-am-seeking-a-sharp-organized-and-proactive-share-7449856656945041408-2owN"},
+      {title:"LinkedIn Post · Apr 17, 2026",date:"Apr 17, 2026",imp:"8,951",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_my-daughters-school-sent-a-form-this-week-share-7450764448182697984-jjQK"},
+      {title:"LinkedIn Post · Apr 22, 2026",date:"Apr 22, 2026",imp:"7,863",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_diyinvestor-share-7452590108781756416-Ln-V"}
+    ]
+  },
+  may: {
+    label: "May 2026",
+    range: "May 1 – May 31, 2026",
+    labels: ["5/1","5/2","5/3","5/4","5/5","5/6","5/7","5/8","5/9","5/10","5/11","5/12","5/13","5/14","5/15","5/16","5/17","5/18","5/19","5/20","5/21","5/22","5/23","5/24","5/25","5/26","5/27","5/28","5/29","5/30","5/31"],
+    impressions: [829,662,673,2750,1013,3163,1747,2626,1569,1410,837,872,2034,749,412,481,884,2396,828,424,374,4055,1425,703,3614,1821,14423,17342,7313,3906,3308],
+    engagements: [1,4,2,18,12,27,5,16,34,0,3,1,23,13,4,2,1,20,5,3,0,30,8,3,37,17,99,72,27,14,5],
+    followers: [14,12,7,10,11,24,25,15,25,7,25,18,17,29,20,7,8,10,10,8,12,6,8,5,17,17,27,33,19,10,9],
+    totalImp: 84643, totalEng: 506, totalFol: 465,
+    peakDay: "May 28", peakVal: "17,342",
+    impTagClass: "green", impTagText: "📈 Steady",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · May 27, 2026",date:"May 27, 2026",imp:"47,425",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_healthinsurance-share-7465285698699444224-DDL2"},
+      {title:"LinkedIn Post · May 6, 2026",date:"May 6, 2026",imp:"9,752",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_a-75-year-old-doctor-lost-rs-1231-crore-share-7457663061173178369-FNW8"},
+      {title:"LinkedIn Post · May 22, 2026",date:"May 22, 2026",imp:"6,415",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_confession-ugcPost-7463469956014174208-PaPg"},
+      {title:"LinkedIn Post · May 25, 2026",date:"May 25, 2026",imp:"6,076",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_sip-mutualfunds-share-7464564549732417536-6L_V"},
+      {title:"LinkedIn Post · May 18, 2026",date:"May 18, 2026",imp:"5,034",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_educationinflation-ugcPost-7462021948328390656-wx2_"}
+    ]
+  },
+  jun: {
+    label: "June 2026",
+    range: "Jun 1 – Jun 29, 2026",
+    labels: ["6/1","6/2","6/3","6/4","6/5","6/6","6/7","6/8","6/9","6/10","6/11","6/12","6/13","6/14","6/15","6/16","6/17","6/18","6/19","6/20","6/21","6/22","6/23","6/24","6/25","6/26","6/27","6/28","6/29"],
+    impressions: [1550,927,1311,632,2539,1033,1108,945,662,596,476,281,222,337,357,4597,4963,8923,5050,2476,2067,1625,2698,2834,2575,1889,1921,1037,384],
+    engagements: [3,2,32,6,16,5,7,5,2,5,3,4,0,1,2,48,27,96,44,16,12,9,4,28,12,18,16,4,1],
+    followers: [19,20,25,12,18,6,9,28,13,18,24,12,9,6,7,7,5,27,7,9,6,12,8,10,10,5,7,3,6],
+    totalImp: 56015, totalEng: 428, totalFol: 348,
+    peakDay: "Jun 18", peakVal: "8,923",
+    impTagClass: "neutral", impTagText: "📊 Building",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Jun 18, 2026",date:"Jun 18, 2026",imp:"14,920",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_i-spent-three-nights-outside-mumbai-two-weeks-share-7473264447688450048-bFWR"},
+      {title:"LinkedIn Post · Jun 16, 2026",date:"Jun 16, 2026",imp:"13,753",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_family-finances-share-7472560545083224065-1GCo"},
+      {title:"LinkedIn Post · Jun 24, 2026",date:"Jun 24, 2026",imp:"5,778",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_a-client-recently-sent-me-a-recommendation-ugcPost-7475435939088007169-FagZ"},
+      {title:"LinkedIn Post · Jun 5, 2026",date:"Jun 5, 2026",imp:"4,594",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_wealthadvisors-bankrm-share-7468550621365956608-vszT"},
+      {title:"LinkedIn Post · Jun 19, 2026",date:"Jun 19, 2026",imp:"2,372",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_wealthmanagement-financialadvisor-clientfirst-share-7473684243936763904-BOhi"}
+    ]
+  }
+}     — JS object with all months data
+  <option value="jan">📅 January 2026 (Jan 1 – Jan 31)</option>
+<option value="feb">📅 February 2026 (Feb 1 – Feb 28)</option>
+<option value="mar">📅 March 2026 (Mar 1 – Mar 31)</option>
+<option value="apr">📅 April 2026 (Apr 1 – Apr 30)</option>
+<option value="may">📅 May 2026 (May 1 – May 31)</option>
+<option value="jun" selected>📅 June 2026 (Jun 1 – Jun 29)</option>   — HTML option tags for dropdown
+  jun   — key of the latest month to show on load
+  19,303 — total follower count
+  Jun 29, 2026  — as of date
+  Jun 29, 2026    — report last updated date
+-->
+
+<div class="m-topbar" id="mTopbar">
+  <div class="m-topbar-row1">
+    <div class="m-brand">
+      <div class="m-logo-mark"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></div>
+      <div><div class="m-brand-title">LinkedIn Report</div><div class="m-brand-sub">Shruti Agrawal · Personal Brand</div></div>
+    </div>
+    <div class="m-live-badge"><span class="m-live-dot"></span><span class="m-live-text">Live</span></div>
+  </div>
+  <div class="m-topbar-row2">
+    <select class="m-period-select" id="mPeriodSelect" onchange="switchMonth(this.value)">
+      <option value="all">📊 All Months — Combined View</option>
+      <option value="jan">📅 January 2026 (Jan 1 – Jan 31)</option>
+<option value="feb">📅 February 2026 (Feb 1 – Feb 28)</option>
+<option value="mar">📅 March 2026 (Mar 1 – Mar 31)</option>
+<option value="apr">📅 April 2026 (Apr 1 – Apr 30)</option>
+<option value="may">📅 May 2026 (May 1 – May 31)</option>
+<option value="jun" selected>📅 June 2026 (Jun 1 – Jun 29)</option>
+    </select>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></div>
+      <div><div class="logo-text">LinkedIn Report</div><div class="logo-sub">Analytics Dashboard</div></div>
+    </div>
+    <div class="sidebar-profile">
+      <div class="avatar-wrap"><div class="avatar">SA</div><div class="online-dot"></div></div>
+      <div class="profile-info"><h3>Shruti Agrawal</h3><p>Personal Brand</p></div>
+    </div>
+    <div class="period-wrap">
+      <span class="period-label">Report Period</span>
+      <select class="period-select" id="desktopPeriodSelect" onchange="switchMonth(this.value)">
+        <option value="all">📊 All Months</option>
+        <option value="jan">📅 January 2026 (Jan 1 – Jan 31)</option>
+<option value="feb">📅 February 2026 (Feb 1 – Feb 28)</option>
+<option value="mar">📅 March 2026 (Mar 1 – Mar 31)</option>
+<option value="apr">📅 April 2026 (Apr 1 – Apr 30)</option>
+<option value="may">📅 May 2026 (May 1 – May 31)</option>
+<option value="jun" selected>📅 June 2026 (Jun 1 – Jun 29)</option>
+      </select>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a class="nav-item active" href="#sec-overview" onclick="navTo('sec-overview',this);return false;"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Dashboard</a>
+      <a class="nav-item" href="#sec-impressions" onclick="navTo('sec-impressions',this);return false;"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Impressions</a>
+      <a class="nav-item" href="#sec-followers" onclick="navTo('sec-followers',this);return false;"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Followers</a>
+      <div class="nav-section">Audience</div>
+      <a class="nav-item" href="#sec-audience" onclick="navTo('sec-audience',this);return false;"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>Demographics</a>
+      <a class="nav-item" href="#sec-posts" onclick="navTo('sec-posts',this);return false;"><span class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>Top Posts</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="report-info"><p>Auto-Updated Monthly</p><span id="sidebarLabel">Loading...</span></div>
+    </div>
+  </aside>
+
+  <main class="main" id="mainContent">
+    <div class="topbar">
+      <div class="topbar-left"><h1>Performance Dashboard</h1><p id="topbarSub">LinkedIn Analytics · Shruti Agrawal</p></div>
+      <div class="topbar-right">
+        <div class="period-chip"><span class="dot"></span><span id="chipLabel">Loading...</span></div>
+        <button class="export-btn"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+    </div>
+
+    <div id="sec-overview">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon indigo"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="kpi-card-body"><div class="kpi-meta">Total Impressions</div><div class="kpi-value" id="kpiImp">—</div><div class="kpi-footer"><span class="kpi-tag" id="kpiImpTag">—</span><div class="kpi-spark-wrap"><div class="kpi-spark-label" id="sl1">—</div><canvas id="spark1"></canvas></div></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon amber"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="kpi-card-body"><div class="kpi-meta">Total Engagements</div><div class="kpi-value" id="kpiEng">—</div><div class="kpi-footer"><span class="kpi-tag neutral">Reactions + Comments</span><div class="kpi-spark-wrap"><div class="kpi-spark-label" id="sl2">—</div><canvas id="spark2"></canvas></div></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+          <div class="kpi-card-body"><div class="kpi-meta">New Followers</div><div class="kpi-value" id="kpiFol">—</div><div class="kpi-footer"><span class="kpi-tag green" id="kpiFolTag">Total: 19,303</span><div class="kpi-spark-wrap"><div class="kpi-spark-label" id="sl3">—</div><canvas id="spark3"></canvas></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-banner">
+      <div class="hb-top">
+        <div class="hb-left">
+          <div class="hb-eyebrow">Total Followers</div>
+          <div class="hb-number">19,303</div>
+          <div class="hb-sub">As of Jun 29, 2026</div>
+        </div>
+        <div class="hb-stats">
+          <div class="hb-stat"><div class="hb-stat-label">Impressions</div><div class="hb-stat-val" id="bImp">—</div><div class="hb-stat-sub" id="bImpS">—</div></div>
+          <div class="hb-stat"><div class="hb-stat-label">Engagements</div><div class="hb-stat-val" id="bEng">—</div><div class="hb-stat-sub" id="bEngS">—</div></div>
+          <div class="hb-stat"><div class="hb-stat-label">New Follows</div><div class="hb-stat-val" id="bFol">—</div><div class="hb-stat-sub" id="bFolS">—</div></div>
+          <div class="hb-stat"><div class="hb-stat-label">Peak Day</div><div class="hb-stat-val" id="bPeak" style="font-size:16px;padding-top:3px;">—</div><div class="hb-stat-sub" id="bPeakS">—</div></div>
+        </div>
+      </div>
+      <div class="hb-mobile-stats">
+        <div class="hb-mstat"><div class="ml">Impressions</div><div class="mv" id="mbImp">—</div><div class="ms" id="mbImpS">—</div></div>
+        <div class="hb-mstat"><div class="ml">Engagements</div><div class="mv" id="mbEng">—</div><div class="ms" id="mbEngS">—</div></div>
+        <div class="hb-mstat"><div class="ml">New Follows</div><div class="mv" id="mbFol">—</div><div class="ms" id="mbFolS">—</div></div>
+        <div class="hb-mstat"><div class="ml">Peak Day</div><div class="mv" id="mbPeak" style="font-size:16px;">—</div><div class="ms" id="mbPeakS">—</div></div>
+      </div>
+    </div>
+
+    <div id="allCompare" style="display:none;margin-bottom:18px;">
+      <div class="card" style="margin-bottom:0;"><div class="card-header"><div><div class="card-title">Month-by-Month Comparison</div><div class="card-sub">All available months side by side</div></div></div><div class="compare-grid" id="compareGrid"></div></div>
+    </div>
+
+    <div id="sec-impressions" style="margin-bottom:18px;">
+      <div class="sec-heading">📊 Daily Impressions</div>
+      <div class="card" style="margin-bottom:0;"><div class="card-header"><div><div class="card-title">Daily Impressions</div><div class="card-sub" id="impSub">—</div></div><div class="legend-pills"><div class="legend-pill"><div class="legend-dot" style="background:#6366F1"></div>Impressions</div></div></div><div class="chart-wrap"><canvas id="impChart"></canvas></div></div>
+    </div>
+
+    <div id="sec-followers" style="margin-bottom:18px;">
+      <div class="sec-heading">📈 Follower Growth</div>
+      <div class="card" style="margin-bottom:0;"><div class="card-header"><div><div class="card-title">Follower Growth</div><div class="card-sub" id="folSub">—</div></div><div class="legend-pills"><div class="legend-pill"><div class="legend-dot" style="background:#10B981"></div>New Followers</div></div></div><div class="chart-wrap"><canvas id="folChart"></canvas></div>
+    </div>
+
+    <div id="sec-audience" style="margin-bottom:18px;">
+      <div class="sec-heading">🌍 Audience Demographics</div>
+      <div class="card" style="margin-bottom:0;" id="audienceCard"></div>
+    </div>
+
+    <div id="sec-posts" style="margin-bottom:18px;">
+      <div class="sec-heading">📝 Top Posts</div>
+      <div class="card" style="margin-bottom:0;" id="postsCard"></div>
+    </div>
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bnav-item active" data-target="sec-overview" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+  <a class="bnav-item" data-target="sec-impressions" href="#"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Impressions</a>
+  <a class="bnav-item" data-target="sec-followers" href="#"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Followers</a>
+  <a class="bnav-item" data-target="sec-audience" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Audience</a>
+  <a class="bnav-item" data-target="sec-posts" href="#"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Posts</a>
+</nav>
+
+<script>
+// ═══════════════════════════════════════
+// DATA — injected by Claude when building
+// ═══════════════════════════════════════
+const MONTHS = {
+  jan: {
+    label: "January 2026",
+    range: "Jan 1 – Jan 31, 2026",
+    labels: ["1/1","1/2","1/3","1/4","1/5","1/6","1/7","1/8","1/9","1/10","1/11","1/12","1/13","1/14","1/15","1/16","1/17","1/18","1/19","1/20","1/21","1/22","1/23","1/24","1/25","1/26","1/27","1/28","1/29","1/30","1/31"],
+    impressions: [10185,5338,1690,1358,2416,1270,2300,1443,2429,936,977,1656,986,2690,1078,582,457,488,379,374,1636,945,1831,1047,1131,2941,1573,2755,2115,2949,8517],
+    engagements: [80,26,10,3,9,9,25,9,30,2,6,8,8,39,13,6,4,1,4,1,18,10,13,5,1,9,3,33,6,14,45],
+    followers: [24,25,5,5,7,12,6,8,4,8,4,6,8,11,8,2,12,7,1,8,3,3,5,8,5,3,10,8,3,15,13],
+    totalImp: 66472, totalEng: 450, totalFol: 247,
+    peakDay: "Jan 1", peakVal: "10,185",
+    impTagClass: "green", impTagText: "📈 Strong start",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Jan 31, 2026",date:"Jan 31, 2026",imp:"11,806",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_budget2026-share-7423236616552390656-H7Wk"},
+      {title:"LinkedIn Post · Jan 21, 2026",date:"Jan 21, 2026",imp:"9,781",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_65-of-women-over-45-make-financial-decisions-share-7419609348114370560-semM"},
+      {title:"LinkedIn Post · Jan 1, 2026",date:"Jan 1, 2026",imp:"7,275",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_2025reflection-newyear2026-share-7412364337538854912-n-km"},
+      {title:"LinkedIn Post · Jan 28, 2026",date:"Jan 28, 2026",imp:"4,298",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_should-i-even-invest-in-india-anymore-if-share-7422150395470299137-xEDb"},
+      {title:"LinkedIn Post · Jan 7, 2026",date:"Jan 7, 2026",imp:"3,742",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_moneymanagement-share-7414539328778878976-nErg"}
+    ]
+  },
+  feb: {
+    label: "February 2026",
+    range: "Feb 1 – Feb 28, 2026",
+    labels: ["2/1","2/2","2/3","2/4","2/5","2/6","2/7","2/8","2/9","2/10","2/11","2/12","2/13","2/14","2/15","2/16","2/17","2/18","2/19","2/20","2/21","2/22","2/23","2/24","2/25","2/26","2/27","2/28"],
+    impressions: [3804,3244,2112,2119,963,44585,19894,4027,7281,3469,2890,1994,2219,818,652,1522,747,1995,919,592,512,880,721,586,1948,707,485,2385],
+    engagements: [6,36,38,22,2,128,49,10,49,7,27,3,17,6,2,36,6,33,10,0,5,6,0,4,25,8,3,32],
+    followers: [8,7,18,7,5,61,16,6,15,14,6,8,9,1,5,8,8,8,4,10,7,5,6,13,11,6,6,8],
+    totalImp: 114070, totalEng: 555, totalFol: 286,
+    peakDay: "Feb 6", peakVal: "44,585",
+    impTagClass: "amber", impTagText: "🔥 Viral month",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Feb 6, 2026",date:"Feb 6, 2026",imp:"76,822",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_is-90-lpa-a-good-salary-in-bengaluru-this-share-7425418180648488961-IIRV"},
+      {title:"LinkedIn Post · Feb 9, 2026",date:"Feb 9, 2026",imp:"7,642",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_silver-share-7426512510717087744-yTH4"},
+      {title:"LinkedIn Post · Feb 2, 2026",date:"Feb 2, 2026",imp:"5,476",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_with-gold-and-silver-in-the-spotlight-this-ugcPost-7424038549294923776-GO7K"},
+      {title:"LinkedIn Post · Feb 28, 2026",date:"Feb 28, 2026",imp:"5,206",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_finance-share-7433380043319484416-ftoC"},
+      {title:"LinkedIn Post · Feb 4, 2026",date:"Feb 4, 2026",imp:"3,519",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_theres-a-side-to-stock-investing-that-doesn-share-7424683296619556864-c9CI"}
+    ]
+  },
+  mar: {
+    label: "March 2026",
+    range: "Mar 1 – Mar 31, 2026",
+    labels: ["3/1","3/2","3/3","3/4","3/5","3/6","3/7","3/8","3/9","3/10","3/11","3/12","3/13","3/14","3/15","3/16","3/17","3/18","3/19","3/20","3/21","3/22","3/23","3/24","3/25","3/26","3/27","3/28","3/29","3/30","3/31"],
+    impressions: [1353,1043,526,439,342,364,278,869,835,2454,707,1871,742,404,454,2015,775,1232,31168,26728,11399,10160,10369,20622,5762,5377,3019,1936,1693,1400,1168],
+    engagements: [14,11,5,5,0,3,4,10,13,45,6,23,9,4,4,36,15,17,264,196,79,81,116,128,31,53,18,3,7,3,8],
+    followers: [7,16,11,8,6,9,2,8,17,20,8,18,10,3,2,15,34,9,160,106,41,41,51,124,33,36,10,6,23,5,6],
+    totalImp: 147504, totalEng: 1211, totalFol: 845,
+    peakDay: "Mar 19", peakVal: "31,168",
+    impTagClass: "amber", impTagText: "🔥 Best month",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Mar 19, 2026",date:"Mar 19, 2026",imp:"1,02,729",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_as-part-of-my-hiring-process-ive-been-screening-share-7440275704832741376-UpUj"},
+      {title:"LinkedIn Post · Mar 23, 2026",date:"Mar 23, 2026",imp:"23,014",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_hiring-wealthmanagement-hiringmumbai-share-7441895766950010881-jG5-"},
+      {title:"LinkedIn Post · Mar 26, 2026",date:"Mar 26, 2026",imp:"7,462",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_financebill-share-7442870614115352576-NK9s"},
+      {title:"LinkedIn Post · Mar 10, 2026",date:"Mar 10, 2026",imp:"3,801",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_moneystrategy-share-7437014655446884352--byw"},
+      {title:"LinkedIn Post · Mar 18, 2026",date:"Mar 18, 2026",imp:"3,506",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_shruti-i-cant-reduce-this-position-it-share-7439913285816279040-sbjF"}
+    ]
+  },
+  apr: {
+    label: "April 2026",
+    range: "Apr 1 – Apr 30, 2026",
+    labels: ["4/1","4/2","4/3","4/4","4/5","4/6","4/7","4/8","4/9","4/10","4/11","4/12","4/13","4/14","4/15","4/16","4/17","4/18","4/19","4/20","4/21","4/22","4/23","4/24","4/25","4/26","4/27","4/28","4/29","4/30"],
+    impressions: [1129,524,412,771,920,718,490,569,1799,13342,8139,4427,3273,6721,6801,2515,4925,3197,2245,5034,2522,5534,4850,3237,4017,1880,7093,2533,1241,1021],
+    engagements: [9,4,8,10,6,4,2,7,12,152,72,40,25,58,44,10,53,39,11,54,16,49,31,27,29,13,30,17,7,2],
+    followers: [23,11,3,5,18,25,16,29,25,34,30,23,35,34,67,27,21,23,11,18,23,20,30,24,10,8,21,14,15,10],
+    totalImp: 101879, totalEng: 841, totalFol: 653,
+    peakDay: "Apr 10", peakVal: "13,342",
+    impTagClass: "green", impTagText: "📈 Growing",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Apr 10, 2026",date:"Apr 10, 2026",imp:"36,921",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_rantpost-share-7448243124054716416-g5Wy"},
+      {title:"LinkedIn Post · Apr 27, 2026",date:"Apr 27, 2026",imp:"11,121",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_shruti-4-lakh-bonus-where-do-i-put-it-share-7454410391062757377-7NtY"},
+      {title:"LinkedIn Post · Apr 14, 2026",date:"Apr 14, 2026",imp:"10,516",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_i-am-seeking-a-sharp-organized-and-proactive-share-7449856656945041408-2owN"},
+      {title:"LinkedIn Post · Apr 17, 2026",date:"Apr 17, 2026",imp:"8,951",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_my-daughters-school-sent-a-form-this-week-share-7450764448182697984-jjQK"},
+      {title:"LinkedIn Post · Apr 22, 2026",date:"Apr 22, 2026",imp:"7,863",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_diyinvestor-share-7452590108781756416-Ln-V"}
+    ]
+  },
+  may: {
+    label: "May 2026",
+    range: "May 1 – May 31, 2026",
+    labels: ["5/1","5/2","5/3","5/4","5/5","5/6","5/7","5/8","5/9","5/10","5/11","5/12","5/13","5/14","5/15","5/16","5/17","5/18","5/19","5/20","5/21","5/22","5/23","5/24","5/25","5/26","5/27","5/28","5/29","5/30","5/31"],
+    impressions: [829,662,673,2750,1013,3163,1747,2626,1569,1410,837,872,2034,749,412,481,884,2396,828,424,374,4055,1425,703,3614,1821,14423,17342,7313,3906,3308],
+    engagements: [1,4,2,18,12,27,5,16,34,0,3,1,23,13,4,2,1,20,5,3,0,30,8,3,37,17,99,72,27,14,5],
+    followers: [14,12,7,10,11,24,25,15,25,7,25,18,17,29,20,7,8,10,10,8,12,6,8,5,17,17,27,33,19,10,9],
+    totalImp: 84643, totalEng: 506, totalFol: 465,
+    peakDay: "May 28", peakVal: "17,342",
+    impTagClass: "green", impTagText: "📈 Steady",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · May 27, 2026",date:"May 27, 2026",imp:"47,425",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_healthinsurance-share-7465285698699444224-DDL2"},
+      {title:"LinkedIn Post · May 6, 2026",date:"May 6, 2026",imp:"9,752",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_a-75-year-old-doctor-lost-rs-1231-crore-share-7457663061173178369-FNW8"},
+      {title:"LinkedIn Post · May 22, 2026",date:"May 22, 2026",imp:"6,415",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_confession-ugcPost-7463469956014174208-PaPg"},
+      {title:"LinkedIn Post · May 25, 2026",date:"May 25, 2026",imp:"6,076",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_sip-mutualfunds-share-7464564549732417536-6L_V"},
+      {title:"LinkedIn Post · May 18, 2026",date:"May 18, 2026",imp:"5,034",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_educationinflation-ugcPost-7462021948328390656-wx2_"}
+    ]
+  },
+  jun: {
+    label: "June 2026",
+    range: "Jun 1 – Jun 29, 2026",
+    labels: ["6/1","6/2","6/3","6/4","6/5","6/6","6/7","6/8","6/9","6/10","6/11","6/12","6/13","6/14","6/15","6/16","6/17","6/18","6/19","6/20","6/21","6/22","6/23","6/24","6/25","6/26","6/27","6/28","6/29"],
+    impressions: [1550,927,1311,632,2539,1033,1108,945,662,596,476,281,222,337,357,4597,4963,8923,5050,2476,2067,1625,2698,2834,2575,1889,1921,1037,384],
+    engagements: [3,2,32,6,16,5,7,5,2,5,3,4,0,1,2,48,27,96,44,16,12,9,4,28,12,18,16,4,1],
+    followers: [19,20,25,12,18,6,9,28,13,18,24,12,9,6,7,7,5,27,7,9,6,12,8,10,10,5,7,3,6],
+    totalImp: 56015, totalEng: 428, totalFol: 348,
+    peakDay: "Jun 18", peakVal: "8,923",
+    impTagClass: "neutral", impTagText: "📊 Building",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26},{name:"Greater Delhi Area",pct:19},{name:"Greater Bengaluru Area",pct:12},{name:"Greater Hyderabad Area",pct:4},{name:"Pune/Pimpri-Chinchwad Area",pct:3}],
+      seniority: [{name:"Senior",pct:36,color:"#6366F1"},{name:"Entry",pct:13,color:"#10B981"},{name:"Director",pct:9,color:"#F59E0B"},{name:"Manager",pct:9,color:"#EF4444"},{name:"VP",pct:6,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:29},{name:"IT Services and IT Consulting",pct:7},{name:"Business Consulting and Services",pct:6},{name:"Banking",pct:5},{name:"Accounting",pct:4}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Jun 18, 2026",date:"Jun 18, 2026",imp:"14,920",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_i-spent-three-nights-outside-mumbai-two-weeks-share-7473264447688450048-bFWR"},
+      {title:"LinkedIn Post · Jun 16, 2026",date:"Jun 16, 2026",imp:"13,753",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_family-finances-share-7472560545083224065-1GCo"},
+      {title:"LinkedIn Post · Jun 24, 2026",date:"Jun 24, 2026",imp:"5,778",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_a-client-recently-sent-me-a-recommendation-ugcPost-7475435939088007169-FagZ"},
+      {title:"LinkedIn Post · Jun 5, 2026",date:"Jun 5, 2026",imp:"4,594",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_wealthadvisors-bankrm-share-7468550621365956608-vszT"},
+      {title:"LinkedIn Post · Jun 19, 2026",date:"Jun 19, 2026",imp:"2,372",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_wealthmanagement-financialadvisor-clientfirst-share-7473684243936763904-BOhi"}
+    ]
+  }
+};
+const DEFAULT_MONTH = 'jun';
+
+// ═══════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════
+const tt={backgroundColor:'#111827',titleColor:'#F9FAFB',bodyColor:'#D1D5DB',padding:10,cornerRadius:8,titleFont:{family:'Inter',size:11},bodyFont:{family:'Inter',size:12,weight:'600'}};
+const sc={x:{grid:{display:false},ticks:{font:{size:10,family:'Inter'},color:'#9CA3AF',maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{grid:{color:'#F9FAFB'},border:{dash:[3,3]},ticks:{font:{size:10,family:'Inter'},color:'#9CA3AF'},beginAtZero:true}};
+let IC,FC;
+function initCharts(){
+  IC=new Chart(document.getElementById('impChart'),{type:'bar',data:{labels:[],datasets:[{label:'Impressions',backgroundColor:'rgba(99,102,241,0.85)',hoverBackgroundColor:'#4F46E5',borderRadius:5,borderSkipped:false,data:[]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{title:c=>`Date: ${c[0].label}`,label:c=>`  Impressions: ${Number(c.raw).toLocaleString()}`}}},scales:sc}});
+  FC=new Chart(document.getElementById('folChart'),{type:'bar',data:{labels:[],datasets:[{label:'New Followers',backgroundColor:'rgba(16,185,129,0.85)',hoverBackgroundColor:'#059669',borderRadius:5,borderSkipped:false,data:[]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{title:c=>`Date: ${c[0].label}`,label:c=>`  New Followers: ${c.raw}`}}},scales:sc}});
+}
+
+function drawSparkline(id,data,color,fill){
+  const canvas=document.getElementById(id);if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;const wrap=canvas.parentElement;
+  const w=Math.max(wrap.offsetWidth,60),h=Math.max(wrap.offsetHeight,28);
+  canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const d2=data.map(v=>Math.max(v,0));const max=Math.max(...d2,1),pad=3;
+  const pts=d2.map((v,i)=>({x:pad+(i/(d2.length-1))*(w-pad*2),y:h-pad-(v/max)*(h-pad*2)}));
+  const grad=ctx.createLinearGradient(0,0,0,h);grad.addColorStop(0,fill);grad.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length;i++){const mx=(pts[i-1].x+pts[i].x)/2;ctx.bezierCurveTo(mx,pts[i-1].y,mx,pts[i].y,pts[i].x,pts[i].y);}
+  ctx.lineTo(pts[pts.length-1].x,h);ctx.lineTo(pts[0].x,h);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length;i++){const mx=(pts[i-1].x+pts[i].x)/2;ctx.bezierCurveTo(mx,pts[i-1].y,mx,pts[i].y,pts[i].x,pts[i].y);}
+  ctx.strokeStyle=color;ctx.lineWidth=1.8;ctx.stroke();
+  const last=pts[pts.length-1];ctx.beginPath();ctx.arc(last.x,last.y,3,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+}
+
+function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+
+function renderAudience(d){
+  const c=document.getElementById('audienceCard');
+  c.innerHTML=`<div class="card-header"><div><div class="card-title">Audience Demographics</div><div class="card-sub">Who is engaging with your content</div></div></div>
+  <div class="section-sep">Top Locations</div><ul class="demo-list">${d.locations.map((l,i)=>`<li class="demo-item"><span class="demo-rank">${i+1}</span><span class="demo-name">${l.name}</span><div class="demo-bar-wrap"><div class="demo-bar" style="width:${Math.round(l.pct/d.locations[0].pct*100)}%"></div></div><span class="demo-pct">${l.pct}%</span></li>`).join('')}</ul>
+  <div class="section-sep" style="margin-top:18px;">Seniority Breakdown</div><div class="seniority-grid">${d.seniority.map(s=>`<div class="seniority-item"><div class="seniority-dot" style="background:${s.color}"></div><div class="seniority-name">${s.name}</div><div class="seniority-pct">${s.pct}%</div></div>`).join('')}</div>
+  <div class="section-sep" style="margin-top:18px;">Top Industries</div>
+  <div class="chart-wrap" style="height:160px;"><canvas id="indChart"></canvas></div>`;
+  new Chart(document.getElementById('indChart'),{type:'bar',data:{labels:d.industries.map(i=>i.name),datasets:[{label:'% of audience',data:d.industries.map(i=>i.pct),backgroundColor:['#6366F1','#818CF8','#A5B4FC','#C7D2FE','#E0E7FF'],borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...tt,callbacks:{label:c=>`  ${c.raw}% of followers`}}},scales:{x:{grid:{color:'#F9FAFB'},ticks:{font:{size:10,family:'Inter'},color:'#9CA3AF',callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:11,family:'Inter'},color:'#374151'}}}}});
+}
+
+function renderPosts(posts){
+  document.getElementById('postsCard').innerHTML=`<div class="card-header"><div><div class="card-title">Top Posts by Impressions</div><div class="card-sub">Highest reach this period</div></div></div>`+
+  posts.map(p=>`<div class="post-item"><div class="post-title">${p.title}</div><div class="post-meta"><span class="post-date">${p.date}</span><div class="post-badges"><span class="badge badge-${p.badge}">${p.badge==='green'?'🔥':'👁'} ${p.imp} impressions</span><a class="post-link" href="${p.url}" target="_blank">View →</a></div></div></div>`).join('');
+}
+
+function switchMonth(val){
+  document.getElementById('desktopPeriodSelect').value=val;
+  document.getElementById('mPeriodSelect').value=val;
+  const allKeys=Object.keys(MONTHS);
+  const allCompare=document.getElementById('allCompare');
+
+  if(val==='all'){
+    const totalImp=allKeys.reduce((s,k)=>s+MONTHS[k].totalImp,0);
+    const totalEng=allKeys.reduce((s,k)=>s+MONTHS[k].totalEng,0);
+    const totalFol=allKeys.reduce((s,k)=>s+MONTHS[k].totalFol,0);
+    const combLabels=allKeys.flatMap(k=>MONTHS[k].labels);
+    const combImp=allKeys.flatMap(k=>MONTHS[k].impressions);
+    const combFol=allKeys.flatMap(k=>MONTHS[k].followers);
+    const combEng=allKeys.flatMap(k=>MONTHS[k].engagements);
+    set('chipLabel','All Months Combined');set('sidebarLabel','Showing: All Months');
+    set('kpiImp',totalImp.toLocaleString());set('kpiEng',totalEng.toLocaleString());set('kpiFol',totalFol.toLocaleString());
+    document.getElementById('kpiImpTag').className='kpi-tag amber';set('kpiImpTag','All Months');
+    set('sl1','Combined');set('sl2','Combined');set('sl3','Combined');
+    set('bImp',totalImp.toLocaleString());set('bImpS','Combined');
+    set('bEng',totalEng.toLocaleString());set('bEngS','Combined');
+    set('bFol',totalFol.toLocaleString());set('bFolS','Combined');
+    set('bPeak','—');set('bPeakS','See monthly view');
+    set('mbImp',totalImp.toLocaleString());set('mbImpS','Combined');
+    set('mbEng',totalEng.toLocaleString());set('mbEngS','Combined');
+    set('mbFol',totalFol.toLocaleString());set('mbFolS','Combined');
+    set('mbPeak','—');set('mbPeakS','See monthly');
+    set('impSub','All months combined — daily impressions');
+    set('folSub','All months combined — follower growth');
+    IC.data.labels=combLabels;IC.data.datasets[0].data=combImp;IC.update();
+    FC.data.labels=combLabels;FC.data.datasets[0].data=combFol;FC.update();
+    drawSparkline('spark1',combImp,'#6366F1','rgba(99,102,241,0.12)');
+    drawSparkline('spark2',combEng,'#F59E0B','rgba(245,158,11,0.12)');
+    drawSparkline('spark3',combFol,'#10B981','rgba(16,185,129,0.12)');
+    allCompare.style.display='block';
+    document.getElementById('compareGrid').innerHTML=allKeys.map(k=>{const d=MONTHS[k];return`<div class="compare-card"><div class="compare-month">🗓 ${d.label}</div><div class="compare-row"><span class="compare-label">Impressions</span><span class="compare-val">${d.totalImp.toLocaleString()}</span></div><div class="compare-row"><span class="compare-label">Engagements</span><span class="compare-val">${d.totalEng.toLocaleString()}</span></div><div class="compare-row"><span class="compare-label">New Followers</span><span class="compare-val">${d.totalFol.toLocaleString()}</span></div><div class="compare-row"><span class="compare-label">Peak Day</span><span class="compare-val">${d.peakDay}</span></div><div class="compare-row"><span class="compare-label">Peak Value</span><span class="compare-val">${d.peakVal}</span></div></div>`;}).join('');
+    renderAudience(MONTHS[allKeys[allKeys.length-1]].audience);
+    const allPosts=allKeys.flatMap(k=>MONTHS[k].posts);
+    renderPosts(allPosts.slice(0,5));
+  } else {
+    const d=MONTHS[val];
+    allCompare.style.display='none';
+    set('chipLabel',d.range);set('sidebarLabel',`Showing: ${d.label}`);
+    set('kpiImp',d.totalImp.toLocaleString());set('kpiEng',d.totalEng.toLocaleString());set('kpiFol',d.totalFol.toLocaleString());
+    const t=document.getElementById('kpiImpTag');t.className=`kpi-tag ${d.impTagClass}`;set('kpiImpTag',d.impTagText);
+    set('sl1',`${d.labels[0]} → ${d.labels[d.labels.length-1]}`);
+    set('sl2',`${d.labels[0]} → ${d.labels[d.labels.length-1]}`);
+    set('sl3',`${d.labels[0]} → ${d.labels[d.labels.length-1]}`);
+    set('bImp',d.totalImp.toLocaleString());set('bImpS',d.label);
+    set('bEng',d.totalEng.toLocaleString());set('bEngS',d.label);
+    set('bFol',d.totalFol.toLocaleString());set('bFolS',d.label);
+    set('bPeak',d.peakDay);set('bPeakS',`${d.peakVal} impressions`);
+    set('mbImp',d.totalImp.toLocaleString());set('mbImpS',d.label);
+    set('mbEng',d.totalEng.toLocaleString());set('mbEngS',d.label);
+    set('mbFol',d.totalFol.toLocaleString());set('mbFolS',d.label);
+    set('mbPeak',d.peakDay);set('mbPeakS',`${d.peakVal} impressions`);
+    set('impSub',`Post views — ${d.range}`);
+    set('folSub',`New followers per day — ${d.label}`);
+    IC.data.labels=d.labels;IC.data.datasets[0].data=d.impressions;IC.update();
+    FC.data.labels=d.labels;FC.data.datasets[0].data=d.followers;FC.update();
+    drawSparkline('spark1',d.impressions,'#6366F1','rgba(99,102,241,0.12)');
+    drawSparkline('spark2',d.engagements.map(v=>Math.max(v,0)),'#F59E0B','rgba(245,158,11,0.12)');
+    drawSparkline('spark3',d.followers,'#10B981','rgba(16,185,129,0.12)');
+    renderAudience(d.audience);
+    renderPosts(d.posts);
+  }
+}
+
+function fixPadding(){if(window.innerWidth>900)return;const bar=document.getElementById('mTopbar');const main=document.getElementById('mainContent');if(!bar||!main)return;main.style.paddingTop=(bar.offsetHeight+14)+'px';}
+window.addEventListener('load',fixPadding);window.addEventListener('resize',fixPadding);
+
+const SECTIONS=['sec-overview','sec-impressions','sec-followers','sec-audience','sec-posts'];
+function getOffset(){if(window.innerWidth>900)return 80;const bar=document.getElementById('mTopbar');return bar?bar.offsetHeight+14:130;}
+function navTo(id,el){const t=document.getElementById(id);if(!t)return;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-getOffset(),behavior:'smooth'});document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));if(el)el.classList.add('active');}
+document.querySelectorAll('.bnav-item').forEach(item=>{item.addEventListener('click',function(e){e.preventDefault();const t=document.getElementById(this.getAttribute('data-target'));if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-getOffset(),behavior:'smooth'});document.querySelectorAll('.bnav-item').forEach(i=>i.classList.remove('active'));this.classList.add('active');});});
+window.addEventListener('scroll',()=>{const off=getOffset()+50;let cur=SECTIONS[0];SECTIONS.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<off)cur=id;});document.querySelectorAll('.bnav-item').forEach(i=>i.classList.toggle('active',i.getAttribute('data-target')===cur));document.querySelectorAll('.nav-item').forEach(i=>i.classList.toggle('active',i.getAttribute('href')==='#'+cur));},{passive:true});
+
+window.addEventListener('load',()=>{initCharts();switchMonth(DEFAULT_MONTH);});
+</script>
+</body>
+</html>
