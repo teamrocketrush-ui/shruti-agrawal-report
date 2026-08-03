@@ -321,7 +321,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <option value="mar">📅 March 2026 (Mar 1 – Mar 31)</option>
 <option value="apr">📅 April 2026 (Apr 1 – Apr 30)</option>
 <option value="may">📅 May 2026 (May 1 – May 31)</option>
-<option value="jun" selected>📅 June 2026 (Jun 1 – Jun 29)</option>   — HTML option tags for dropdown
+<option value="jun">📅 June 2026 (Jun 1 – Jun 29)</option>   — HTML option tags for dropdown
   jun   — key of the latest month to show on load
   19,303 — total follower count
   Jun 29, 2026  — as of date
@@ -344,7 +344,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <option value="mar">📅 March 2026 (Mar 1 – Mar 31)</option>
 <option value="apr">📅 April 2026 (Apr 1 – Apr 30)</option>
 <option value="may">📅 May 2026 (May 1 – May 31)</option>
-<option value="jun" selected>📅 June 2026 (Jun 1 – Jun 29)</option>
+<option value="jun">📅 June 2026 (Jun 1 – Jun 29)</option>
+    
+      <option value="jul" selected>📅 July 2026 (Jul 1 – Jul 31, 2026)</option>
     </select>
   </div>
 </div>
@@ -368,8 +370,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <option value="mar">📅 March 2026 (Mar 1 – Mar 31)</option>
 <option value="apr">📅 April 2026 (Apr 1 – Apr 30)</option>
 <option value="may">📅 May 2026 (May 1 – May 31)</option>
-<option value="jun" selected>📅 June 2026 (Jun 1 – Jun 29)</option>
-      </select>
+<option value="jun">📅 June 2026 (Jun 1 – Jun 29)</option>
+      
+      <option value="jul" selected>📅 July 2026 (Jul 1 – Jul 31, 2026)</option>
+    </select>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">Overview</div>
@@ -406,7 +410,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         </div>
         <div class="kpi-card">
           <div class="kpi-icon green"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
-          <div class="kpi-card-body"><div class="kpi-meta">New Followers</div><div class="kpi-value" id="kpiFol">—</div><div class="kpi-footer"><span class="kpi-tag green" id="kpiFolTag">Total: 19,303</span><div class="kpi-spark-wrap"><div class="kpi-spark-label" id="sl3">—</div><canvas id="spark3"></canvas></div></div></div>
+          <div class="kpi-card-body"><div class="kpi-meta">New Followers</div><div class="kpi-value" id="kpiFol">—</div><div class="kpi-footer"><span class="kpi-tag green" id="kpiFolTag">Total: 19,466</span><div class="kpi-spark-wrap"><div class="kpi-spark-label" id="sl3">—</div><canvas id="spark3"></canvas></div></div></div>
         </div>
       </div>
     </div>
@@ -415,7 +419,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="hb-top">
         <div class="hb-left">
           <div class="hb-eyebrow">Total Followers</div>
-          <div class="hb-number">19,303</div>
+          <div class="hb-number">19,466</div>
           <div class="hb-sub">As of <span id="followersAsOf">Jun 29, 2026</span></div>
         </div>
         <div class="hb-stats">
@@ -472,6 +476,29 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 // DATA — injected by Claude when building
 // ═══════════════════════════════════════
 const MONTHS = {
+  jul: {
+    label: "July 2026",
+    range: "Jul 1 – Jul 31, 2026",
+    labels: ["7/1", "7/2", "7/3", "7/4", "7/5", "7/6", "7/7", "7/8", "7/9", "7/10", "7/11", "7/12", "7/13", "7/14", "7/15", "7/16", "7/17", "7/18", "7/19", "7/20", "7/21", "7/22", "7/23", "7/24", "7/25", "7/26", "7/27", "7/28", "7/29", "7/30", "7/31"],
+    impressions: [1086, 680, 2321, 1257, 588, 857, 450, 290, 249, 292, 237, 587, 444, 1260, 770, 450, 184, 214, 197, 2053, 833, 404, 382, 300, 214, 228, 197, 495, 121, 4845, 2063],
+    engagements: [9, 11, 26, 13, 4, 14, 2, 2, 5, 2, 0, 0, -2, 36, 17, 3, 6, 3, 0, 64, 26, 7, 9, 8, 2, 0, 5, 15, 6, 69, 31],
+    followers: [8, 4, 5, 3, 3, 16, 5, 3, 6, 11, 4, 9, 9, 24, 15, 29, 3, 10, 3, 9, 5, 6, 4, 6, 1, 4, 9, 8, 2, 39, 11],
+    totalImp: 24548, totalEng: 393, totalFol: 274,
+    peakDay: "Jul 30", peakVal: "4,845",
+    impTagClass: "green", impTagText: "📈 Growing",
+    audience: {
+      locations: [{name:"Mumbai Metropolitan Region",pct:26.0},{name:"Greater Delhi Area",pct:19.0},{name:"Greater Bengaluru Area",pct:12.0},{name:"Greater Hyderabad Area",pct:4.0},{name:"Greater Kolkata Area",pct:3.0}],
+      seniority: [{name:"Senior",pct:36.0,color:"#6366F1"},{name:"Entry",pct:13.0,color:"#10B981"},{name:"Director",pct:9.0,color:"#F59E0B"},{name:"Manager",pct:9.0,color:"#EF4444"},{name:"VP",pct:6.0,color:"#8B5CF6"}],
+      industries: [{name:"Financial Services",pct:30.0},{name:"IT Services and IT Consulting",pct:7.0},{name:"Business Consulting and Services",pct:6.0},{name:"Banking",pct:5.0},{name:"Accounting",pct:4.0}]
+    },
+    posts: [
+      {title:"LinkedIn Post · Jul 30, 2026",date:"Jul 30, 2026",imp:"4,447",badge:"green",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_hiring-share-7488450301990019073-H7B8"},
+      {title:"LinkedIn Post · Jul 3, 2026",date:"Jul 3, 2026",imp:"3,862",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_personalfinance-financialplanning-couplefinance-share-7478765227556114432-zV9B"},
+      {title:"LinkedIn Post · Jul 20, 2026",date:"Jul 20, 2026",imp:"3,597",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_i-spent-12-hours-preparing-for-a-conversation-ugcPost-7484913205685895168-Uw5a"},
+      {title:"LinkedIn Post · Jul 14, 2026",date:"Jul 14, 2026",imp:"2,373",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_last-week-i-had-the-opportunity-to-be-back-ugcPost-7482752430091456512-NuBi"},
+      {title:"LinkedIn Post · Jul 31, 2026",date:"Jul 31, 2026",imp:"1,244",badge:"indigo",url:"https://www.linkedin.com/posts/shrutiagrawalcfa_kospi-nifty50-diversification-share-7488839432062697472-asO8"}
+    ]
+  },
   jan: {
     label: "January 2026",
     range: "Jan 1 – Jan 31, 2026",
@@ -611,7 +638,7 @@ const MONTHS = {
     ]
   }
 };
-const DEFAULT_MONTH = 'jun';
+const DEFAULT_MONTH = 'jul';
 
 // ═══════════════════════════════════════
 // CHARTS
